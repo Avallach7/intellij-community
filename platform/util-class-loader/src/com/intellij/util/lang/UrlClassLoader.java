@@ -12,6 +12,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
@@ -116,7 +117,10 @@ public class UrlClassLoader extends ClassLoader implements ClassPath.ClassDataCo
       // LinkedHashSet is used to remove duplicates
       Set<Path> files = new LinkedHashSet<>(urls.length);
       for (URL url : urls) {
-        files.add(Paths.get(url.getPath()));
+        try {
+          files.add(Paths.get(url.toURI()));
+        }
+        catch (URISyntaxException ignored) { }
       }
       configuration.files = files;
     }
